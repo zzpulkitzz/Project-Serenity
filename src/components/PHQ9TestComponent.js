@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-
+import React, { useState ,useEffect} from 'react';
+import { useSearchParams } from 'react-router-dom'
 const PHQ9TestComponent = () => {
   const [answers, setAnswers] = useState(Array(9).fill(0));
   const [score, setScore] = useState(null);
-
+  const [searchParams]=useSearchParams()
+  const userId=searchParams.get("userId")
   const questions = [
     "Little interest or pleasure in doing things",
     "Feeling down, depressed, or hopeless",
@@ -15,6 +16,47 @@ const PHQ9TestComponent = () => {
     "Moving or speaking slowly or being restless",
     "Thoughts of being better off dead or hurting yourself"
   ];
+
+  async function getScore(searchExp){
+    try{
+        console.log("getting")
+
+      let response=await fetch(`http://localhost:5200/users/score?userId=${userId}`,{headers:{"authorization":`Bearer }`}})
+      let list_temp =await response.json()
+      console.log(typeof list_temp)
+      setScore(list_temp)
+      
+      if (!response.ok) {
+          // Throw an error if the response status is not OK
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }else{
+            return null
+        }
+  }catch(error){
+      console.log(error.message)
+  }
+  }
+
+  
+  async function sendScore(score){
+    console.log(score)
+    try{
+        let response=await fetch(`http://localhost:5200/users/score?userId=${userId}`,{
+        method:"POST",
+        headers:{"Content-type":"application/json","authorization":`Bearer ` },
+        body: JSON.stringify({score:score}
+          )})
+
+        let res=await response.json()
+
+        console.log(res)
+        
+    
+        
+    }catch(error){
+        console.log(error)
+    }}
+
   const getRandomColor = () => {
     const letters = '0123456789ABCDEF';
     let color = '#';
@@ -35,6 +77,18 @@ const PHQ9TestComponent = () => {
     const totalScore = answers.reduce((sum, current) => sum + current, 0);
     setScore(totalScore);
   };
+  useEffect(()=>{
+    setTimeout(()=>{
+      getScore()
+    },[500])
+  },[0])
+
+  useEffect(()=>{
+    console.log(score)
+    if(score!==null){
+      sendScore(score)}
+  },[score])
+
 
   const getRecommendation = () => {
     if (score === null) return '';
