@@ -38,10 +38,13 @@ function App() {
   const RootLayout = () => {
     return (
       <div className="App">
-        <header className="App-header flex gap-2">
+        <header className="App-header flex gap-2 justify-between">
+          <div className="flex gap-2">
           <img src={mental_health} className="h-8 w-50" alt="Mental Health Logo" />
-          <h1 className="p-1">FreeyourMind</h1>
-          <div className='logout' onClick={()=>{
+          <h1 className="p-1 text-2xl font-bold mt-0">MindConnect</h1>
+          </div>
+         
+          <div className='logout bg-[rgb(97,217,251)] flex justify-center items-center px-3' onClick={()=>{
             localStorage.setItem('login',false);
             window.location.reload();
           }}>
@@ -50,7 +53,7 @@ function App() {
 
         </header>
         
-        <nav className='mx-auto mt-5 border flex justify-center gap-3 max-w-[65vw]'>
+        <nav className='mt-5 border-2 rounded-xl flex flex-row justify-around  w-[75vw] m-auto px-[10px] bg-[rgb(40,44,52)] '>
           <Link to="/"><button>Dashboard</button></Link>
           <Link to="/phq9"><button>PHQ-9 Test</button></Link>
           <Link to="/mood-tracker"><button>Mood Tracker</button></Link>
@@ -78,9 +81,11 @@ function App() {
 
   const router = createBrowserRouter(
     createRoutesFromElements(
+      <Route>
+        <Route path="login" element={<LoginComponent onLogin />} />
       <Route path="/" element={<RootLayout />} >
         <Route index element={<DashboardComponent />} />
-        <Route path="login" element={<LoginComponent onLogin />} />
+        
         <Route 
           path="phq9" 
           loader={async ({ request }) => {
@@ -126,6 +131,7 @@ function App() {
           }}
           element={<ResourceDirectoryComponent />} 
         />
+      </Route>
       </Route>
     )
   );

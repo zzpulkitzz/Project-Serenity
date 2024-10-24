@@ -29,8 +29,8 @@ const AnonymousChatComponent = () => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type your message..."
-         className='border'/>
-        <button type="submit" className='py-0'>Send</button>
+         className='border pl-[9px]'/>
+        <button type="submit" className='py-2 bg-[rgb(40,44,52)] text-white rounded-full'>Send</button>
       </form>
     </div>
   );

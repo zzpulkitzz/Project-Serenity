@@ -141,7 +141,7 @@ blinkError(err)
   return (
     <main className="main flex flex-col justify-center items-center h-[100vh] ">
       
-    <form className={`form flex flex-col bg-white h-md:h-[320px] h-md:w-[430px] h-sm:w-[270px] h-sm:h-[51vh] shadow-md p-[15px] justify-between mt-[40px]`}>
+    <form className={`form flex flex-col bg-white h-md:h-[320px] h-md:w-[430px] h-sm:w-[270px] h-sm:h-[51vh] shadow-md p-[15px] justify-between mt-[40px] `}>
     <h1 className='flex justify-center items-start'>
       
       <span className="text-[22px]">{is_reg==true? "Signin":"Register"} </span></h1>
@@ -161,11 +161,11 @@ blinkError(err)
         <input type="password" id="password" name="password" required className="border-[rbg(0,10,0)] border-[0.5px] bg-[rgb(249,252,254)] w-[75%]"/>
         </div>
   
-        <button type="submit " className='bg-blue-600 text-[white] mt-[12px]' onClick={is_reg?onSignin:onSignup}>{is_reg?"Signin":"Register"}</button>
+        <button type="submit " className='bg-[rgb(97,217,251)] text-[white] mt-[12px]' onClick={is_reg?onSignin:onSignup}>{is_reg?"Signin":"Register"}</button>
 
         {is_reg===true?<div className="Signin flex justify-center items-center mt-[-18px] text-sm">
             Not a member yet? <span className="text-blue-600 " onClick={onRegister}>Register</span>
-        </div>:<div className="flex justify-center items-center mt-[1px] text-sm ">Already a user? <span className="text-blue-600 " onClick={()=>{
+        </div>:<div className="flex justify-center items-center mt-[1px] text-sm ">Already a user? <span className="text-[rgb(97,217,251)] " onClick={()=>{
             set_is_reg(()=>{
                 return true
             })

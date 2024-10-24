@@ -1,5 +1,7 @@
 import React, { useState ,useEffect} from 'react';
 import { useSearchParams } from 'react-router-dom'
+
+
 const PHQ9TestComponent = () => {
   const [answers, setAnswers] = useState(Array(9).fill(0));
   const [score, setScore] = useState(null);
@@ -76,7 +78,13 @@ const PHQ9TestComponent = () => {
   const calculateScore = () => {
     const totalScore = answers.reduce((sum, current) => sum + current, 0);
     setScore(totalScore);
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth' // Optional for smooth scrolling
+    });
+
   };
+
   useEffect(()=>{
     setTimeout(()=>{
       getScore()
@@ -99,8 +107,61 @@ const PHQ9TestComponent = () => {
     return "Severe depression. Seek immediate help.";
   };
 
+
+
+  const progressPercentage = (score / 27) * 100;
+
   return (
     <div>
+      <div className='widget'>
+      <div className="max-w-md mx-auto bg-white rounded-3xl shadow-lg p-8 mt-[20px]">
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center gap-3">
+          <svg 
+            viewBox="0 0 24 24" 
+            className="w-8 h-8"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z"/>
+            <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+            <path d="M9 9h.01M15 9h.01"/>
+          </svg>
+          <h1 className="text-2xl font-bold">Mental Health Score</h1>
+        </div>
+
+        {/* Score Display */}
+        <div className="flex items-baseline gap-2 text-[rgb(251,190,36)]">
+          <span className="text-6xl font-bold ">
+            {score}
+          </span>
+          <span className="text-4xl text-gray-400">
+            /27
+          </span>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-black rounded-full transition-all duration-500"
+            style={{ width: `${progressPercentage}%` }}
+          />
+        </div>
+
+        {/* Description */}
+        <p>{getRecommendation()}</p>
+
+        {/* Quote */}
+        <div className="bg-[rgb(251,190,36)] rounded-xl p-4">
+          <blockquote className="text-lg italic">
+            "Small steps lead to big changes."
+          </blockquote>
+        </div>
+      </div>
+    </div>
+      </div>
       <h2 className='font-bold text-2xl mt-5 mb-5'>PHQ-9 Depression Test</h2>
       {questions.map((question, index) => (
         <div key={index} className='border rounded-xl max-w-[45vw] flex flex-col justify-center items-center mx-auto gap-4 mt-5 mb-5 p-5 text-white font-semibold font' style={{ backgroundColor: getRandomColor() }}>
@@ -115,12 +176,7 @@ const PHQ9TestComponent = () => {
       ))}
       <button onClick={calculateScore}>Submit</button>
 
-      {score !== null && (
-        <div className='font-semibold text-xl mt-5 flex flex-col gap-2'>
-          <h3>Your Score: {score}</h3>
-          <p>{getRecommendation()}</p>
-        </div>
-      )}
+     
     </div>
   );
 };
