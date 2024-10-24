@@ -44,7 +44,7 @@ const Chatbot = () => {
     return (
         <div className='flex flex-col gap-3'>
             <h1>Chatbot</h1>
-            <form onSubmit={handleSubmit} className='flex gap-3 max-h-6'>
+            <form  className='flex gap-3 max-h-6'>
                 <input
                     type="text"
                     value={userInput}
@@ -52,7 +52,7 @@ const Chatbot = () => {
                     placeholder="Ask something..."
                     required
                 />
-                <button type="submit" className='py-0 max-h-8 m-0'>Send</button>
+                <div onClick={handleSubmit} className='py-0 max-h-8 m-0 hover:bg-blue-600 hover:rounded-2xl px-[10px] transition-all'>Send</div>
             </form>
             {response && (
                 <div>
