@@ -12,10 +12,11 @@ let connect=async (url)=>{
 }
 
 let user_schema=new Schema({
-    name:{type:String,required:[true,"provide the name"],unique:false},
+    name:{type:String,unique:false},
     email:{type:String,required:[true,"provide the email"],unique:true},
-    password:{type:String,required:[true,"provide the password name"],unique:false},
-    score:{type:Number},
+    password:{type:String,unique:false},
+    score: [{ type: Number }],
+    uid:{type:String,required:[true,"provide the fuid"],unique:true},
 })
 
 

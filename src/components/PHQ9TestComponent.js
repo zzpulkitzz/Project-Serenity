@@ -6,7 +6,7 @@ const PHQ9TestComponent = () => {
   const [answers, setAnswers] = useState(Array(9).fill(0));
   const [score, setScore] = useState(null);
   const [searchParams]=useSearchParams()
-  const userId=searchParams.get("userId")
+  const uid=searchParams.get("uid")
   const questions = [
     "Little interest or pleasure in doing things",
     "Feeling down, depressed, or hopeless",
@@ -23,7 +23,7 @@ const PHQ9TestComponent = () => {
     try{
         console.log("getting")
 
-      let response=await fetch(`http://localhost:5200/users/score?userId=${userId}`,{headers:{"authorization":`Bearer }`}})
+      let response=await fetch(`http://localhost:5200/users/score?uid=${uid}`,{headers:{"authorization":`Bearer }`}})
       let list_temp =await response.json()
       console.log(typeof list_temp)
       setScore(list_temp)
@@ -43,7 +43,7 @@ const PHQ9TestComponent = () => {
   async function sendScore(score){
     console.log(score)
     try{
-        let response=await fetch(`http://localhost:5200/users/score?userId=${userId}`,{
+        let response=await fetch(`http://localhost:5200/users/score?uid=${uid}`,{
         method:"POST",
         headers:{"Content-type":"application/json","authorization":`Bearer ` },
         body: JSON.stringify({score:score}
@@ -59,14 +59,7 @@ const PHQ9TestComponent = () => {
         console.log(error)
     }}
 
-  const getRandomColor = () => {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  };
+  
   
 
   const handleAnswerChange = (index, value) => {
@@ -164,7 +157,7 @@ const PHQ9TestComponent = () => {
       </div>
       <h2 className='font-bold text-2xl mt-5 mb-5'>PHQ-9 Depression Test</h2>
       {questions.map((question, index) => (
-        <div key={index} className='border rounded-xl max-w-[45vw] flex flex-col justify-center items-center mx-auto gap-4 mt-5 mb-5 p-5 text-white font-semibold font' style={{ backgroundColor: getRandomColor() }}>
+        <div key={index} className='border rounded-xl max-w-[45vw] flex flex-col justify-center items-center mx-auto gap-4 mt-5 mb-5 p-5 text-black font-semibold font bg-blue-200' >
           <p className='text-xl'>{question}</p>
           <select onChange={(e) => handleAnswerChange(index, e.target.value)} className='border border-black text-black rounded-md'>
             <option value="0">Not at all</option>
@@ -174,7 +167,7 @@ const PHQ9TestComponent = () => {
           </select>
         </div>
       ))}
-      <button onClick={calculateScore}>Submit</button>
+      <button onClick={calculateScore} className="bg-blue-500 hover:rounded-[0px] hover:bg-blue-400" >Submit</button>
 
      
     </div>

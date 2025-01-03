@@ -1,181 +1,181 @@
-import React, { useState } from 'react';
-import {useNavigate,useSearchParams} from "react-router-dom"
-const LoginComponent = ({ onLogin }) => {
-  const [searchParams]=useSearchParams()
-  const pathname=searchParams.get("redirectTo")
-  const history=useNavigate()
-  const [is_reg,set_is_reg]=useState(true)
-  const [errMessage,setErrMessage]=useState()
+import { useState, useContext } from 'react';
+import { AuthContext } from '../Authcontext';
+import { useNavigate } from 'react-router-dom';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase';
 
-  console.log(pathname)
-  async function sendData(fetchUrl,postData){   
-    try{
-        console.log(fetchUrl,postData)
-        let response=await fetch(fetchUrl,{
-        method:"POST",
-        headers:{"Content-type":"application/json"},
-        body: JSON.stringify(postData)})
-        let res=await response.json()
-        return res
-    }catch(error){
-        console.log(error)
+export const LoginComponent = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
+  const { signup } = useContext(AuthContext);
+  const [isLogin, setIsLogin] = useState(true);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSignin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const result = await onSignin(email, password);
+      if (result.status === 200) {
+        // Successfully signed in
+        let uid=result.user.uid
+        navigate(`/?uid=${uid}`); // or wherever you want to redirect
+      } else {
+        setError(result.message);
+      }
+    } catch (err) {
+      setError('Failed to sign in. Please try again.');
+    } finally {
+      setLoading(false);
     }
-}
-async function onSignup(event){
-event.preventDefault()
-let form=document.getElementsByClassName("form")[0]
-let formData=new FormData(form)
-let formItrt2=formData.entries()
-console.log(formItrt2)
-let formDict2={}
-for(const [key,value] of formItrt2){
-    formDict2[key]=value
-}
-console.log(formDict2)
-const response=await sendData("http://localhost:5200/users/signup",formDict2)
-let formDict={}
-if(response && response.status==200){
-        Object.keys(formDict2).filter((elem)=>elem!="name").map((key)=>{
-            console.log(key)
-            return formDict[key]=formDict2[key]
-        })
-        console.log(formDict)
+  };
 
-        setTimeout(async ()=>{
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
 
+    try {
+      await signup(email, password);
+      navigate('/');
+    } catch (err) {
+      setError('Failed to create account. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            let response_signin= await sendData("http://localhost:5200/users/signin",formDict)
-            console.log(response_signin)
-            if(response_signin){
-                localStorage.setItem("UserName",response_signin.user.name)
-                console.log(response_signin.id)
-                let id=response_signin.id
-                localStorage.setItem("token",response_signin.token)
-                console.log(id)
-                history(`/${pathname}?userId=${id}`)
-              
-                localStorage.setItem("login",true)
-            }
-            
-        },[1000])
-}else{
-    console.log(response)
-    setErrMessage(()=>{
-        return response.message
-    })
-}
+  const onSignin = async (email, password) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
 
-}
-
-
-async function onSignin(event){
-event.preventDefault()
-let form=document.getElementsByClassName("form")[0]
-let formData=new FormData(form)
-let formItrt2=formData.entries()
-console.log(formItrt2)
-let formDict2={}
-for(const [key,value] of formItrt2){
-    formDict2[key]=value
-}
-console.log(formDict2)
-let response=await sendData("http://localhost:5200/users/signin",formDict2)
-console.log("ye",response)
-if(response.status==200){
-    localStorage.setItem("UserName",response.user.name)
-        
-        localStorage.setItem("token",response.token)
-        let id=response.id  
-        localStorage.setItem("login",true)
-        console.log(`/${pathname}?userId=${id}`)
-        history(`${pathname}?userId=${id}`)
-        
-    }else{
-        console.log(response.message)
-        setErrMessage(()=>{
-            return response.message
-        })
-        
+      const token = await userCredential.user.getIdToken();
       
+      
+      return {
+        status: 200,
+        message: "Login successful",
+        token: token,
+        user: {
+          uid: userCredential.user.uid,
+          email: userCredential.user.email
+        }
+      };
+    } catch (error) {
+      let errorMessage;
+      switch (error.code) {
+        case 'auth/invalid-email':
+          errorMessage = 'Invalid email address format.';
+          break;
+        case 'auth/user-disabled':
+          errorMessage = 'This account has been disabled.';
+          break;
+        case 'auth/user-not-found':
+          errorMessage = 'No account found with this email.';
+          break;
+        case 'auth/wrong-password':
+          errorMessage = 'Incorrect password. Please try again.';
+          break;
+        default:
+          errorMessage = 'An unexpected error occurred. Please try again.';
+          break;
+      }
+      return {
+        status: 400,
+        message: errorMessage
+      };
     }
-
-
-
-
-
-}
-
-
-function onRegister(){
-set_is_reg(()=>{
-    return false
-})
-}
-
-let blinkError=(errType)=>{
-console.log(errType)
-setTimeout(()=>{
-    errType.classList.remove("opacity-0")
-    errType.classList.add("opacity-100")
-    errType.classList.add("transition-opacity")
-    errType.classList.add("duration-300")
-    
-},[100])
-
-setTimeout(()=>{
-    errType.classList.remove("opacity-100")                  
-    errType.classList.add("opacity-0")                    
-},[3000]) 
-
-errType.classList.remove("transition-opacity")
-errType.classList.remove("duration-300")
-}
-
-if(errMessage){
-console.log("yo")
-let err=document.getElementsByClassName("err")[0]
-blinkError(err)
-}
-
+  };
 
   return (
-    <main className="main flex flex-col justify-center items-center h-[100vh] ">
-      
-    <form className={`form flex flex-col bg-white h-md:h-[320px] h-md:w-[430px] h-sm:w-[270px] h-sm:h-[51vh] shadow-md p-[15px] justify-between mt-[40px] `}>
-    <h1 className='flex justify-center items-start'>
-      
-      <span className="text-[22px]">{is_reg==true? "Signin":"Register"} </span></h1>
-      
-      {is_reg==true?null:
-      <div className="name flex flex-col  justify-between ">
-      <label htmlFor="name" className='name_label text-sm text-[12px] text-[#5E5E5E] font-semibold'>Name:</label>
-      <input type="text" id="name" name="name" required className=" border-[rbg(0,10,0)] border-[0.5px] bg-[rgb(249,252,254)] w-[78%]"/>
-      </div>
-      }
-      <div className="email flex flex-col  justify-between ">
-        <label htmlFor="email" className='email_label text-sm text-[12px] text-[#5E5E5E] font-semibold'>Email:</label>
-        <input type="text" id="email" name="email" required className=" border-[rbg(0,10,0)] border-[0.5px] bg-[rgb(249,252,254)] w-[78%]"/>
-        </div>
-        <div className="password flex flex-col  justify-between">
-        <label htmlFor="password" className='password_label text-sm text-[12px] text-[#5E5E5E] font-semibold'>Password:</label>
-        <input type="password" id="password" name="password" required className="border-[rbg(0,10,0)] border-[0.5px] bg-[rgb(249,252,254)] w-[75%]"/>
-        </div>
-  
-        <button type="submit " className='bg-[rgb(97,217,251)] text-[white] mt-[12px]' onClick={is_reg?onSignin:onSignup}>{is_reg?"Signin":"Register"}</button>
+    <main className="main flex flex-col justify-center items-center h-[61vh]">
+      <form 
+        className="form flex flex-col bg-white h-md:h-[320px] h-md:w-[430px] h-sm:w-[270px] h-sm:h-[51vh] shadow-md p-[15px] justify-between mt-[40px]"
+        onSubmit={isLogin ? handleSignin : handleSignup}
+      >
+        <h1 className="flex justify-center items-start">
+          <span className="text-[22px]">{isLogin ? "Sign In" : "Register"}</span>
+        </h1>
+        
+        {!isLogin && (
+          <div className="name flex flex-col justify-between">
+            <label htmlFor="name" className="text-sm text-[12px] text-[#5E5E5E] font-semibold">
+              Name:
+            </label>
+            <input
+              type="text"
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              className="border-[rbg(0,10,0)] border-[0.5px] bg-[rgb(249,252,254)] w-[78%]"
+            />
+          </div>
+        )}
 
-        {is_reg===true?<div className="Signin flex justify-center items-center mt-[-18px] text-sm">
-            Not a member yet? <span className="text-blue-600 " onClick={onRegister}>Register</span>
-        </div>:<div className="flex justify-center items-center mt-[1px] text-sm ">Already a user? <span className="text-[rgb(97,217,251)] " onClick={()=>{
-            set_is_reg(()=>{
-                return true
-            })
-        }}> Signin</span></div>}
-    </form>
-    <div className="err mt-[20px] opacity-0 text-red-400">{errMessage}
-    </div>
+        <div className="email flex flex-col justify-between">
+          <label htmlFor="email" className="text-sm text-[12px] text-[#5E5E5E] font-semibold">
+            Email:
+          </label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="border-[rbg(0,10,0)] border-[0.5px] bg-[rgb(249,252,254)] w-[78%]"
+          />
+        </div>
+
+        <div className="password flex flex-col justify-between">
+          <label htmlFor="password" className="text-sm text-[12px] text-[#5E5E5E] font-semibold">
+            Password:
+          </label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="border-[rbg(0,10,0)] border-[0.5px] bg-[rgb(249,252,254)] w-[75%]"
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-[rgb(86,52,243)] text-white mt-[12px] disabled:opacity-50"
+        >
+          {loading ? "Loading..." : (isLogin ? "Sign In" : "Register")}
+        </button>
+
+        {isLogin ? (
+          <div className="flex justify-center items-center mt-[-18px] text-sm">
+            Not a member yet?{" "}
+            <span className="text-[rgb(86,52,243)] cursor-pointer" onClick={() => setIsLogin(false)}>
+              Register
+            </span>
+          </div>
+        ) : (
+          <div className="flex justify-center items-center mt-[1px] text-sm">
+            Already a user?{" "}
+            <span className="text-[rgb(86,52,243)] cursor-pointer" onClick={() => setIsLogin(true)}>
+              Sign In
+            </span>
+          </div>
+        )}
+      </form>
+
+      {error && (
+        <div className="mt-[20px] text-red-400">
+          {error}
+        </div>
+      )}
     </main>
-
   );
 };
-
-export default LoginComponent;

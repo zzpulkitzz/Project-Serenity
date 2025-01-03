@@ -7,13 +7,16 @@ const cors=require("cors")
 require("dotenv").config()
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+
 let {routerScore,routerUsers,routerAuth}=require("./controllers/router")
+const { verifyToken } = require('./middleware/authMiddleware');
 
 const session = require('express-session');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 let {connect,user_model}=require("./connect.js")
 const app = express();
+
 
 
 
@@ -67,7 +70,26 @@ app.use("/users",routerUsers,routerAuth,routerScore)
 
 // catch 404 and forward to error handler
 
+app.get('/verify', verifyToken, async (req, res) => {
+  console.log("hebhsb")
+  try {
+    console.log("uid:",req.user.uid)
+    const user = await user_model.findOne({ uid: req.user.uid });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    console.log(user)
+    res.json(user);
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: error.message });
+  }
+});
 
+app.get("/clear",async (req,res)=>{
+  await user_model.deleteMany({})
+  res.send("cleared")
+})
 app.get('/login', (req, res) => {
   // Redirects the user to the Google authentication page
   passport.authenticate('google', { scope: ['profile', 'email'] })(req, res);

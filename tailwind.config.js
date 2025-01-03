@@ -58,7 +58,20 @@ module.exports = {
   				'5': 'hsl(var(--chart-5))'
   			}
   		}
-  	}
+  	},
+	  backgroundPosition: {
+		bottom: 'bottom',
+		'bottom-4': 'center bottom 1rem',
+		'custom': 'center  0px ',
+		left: 'left',
+		'left-bottom': 'left bottom',
+		'left-top': 'left top',
+		right: 'right',
+		'right-bottom': 'right bottom',
+		'right-top': 'right top',
+		top: 'top',
+		'top-4': 'center top 1rem',
+	  }
   },
   plugins: [],
 }

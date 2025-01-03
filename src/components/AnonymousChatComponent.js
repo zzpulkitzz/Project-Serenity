@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef ,useContext} from 'react';
 import { db, auth } from '../firebase.js';
+import { AuthContext } from '../Authcontext.js';
 import { 
   collection, 
   addDoc, 
@@ -17,7 +18,8 @@ const AnonymousChatComponent = () => {
   const [roomId, setRoomId] = useState(null);
   const [userId, setUserId] = useState(null);
   const messagesEndRef = useRef(null);
-
+  const textBoxRef=useRef(null)
+  const {user}=useContext(AuthContext)
   // Scroll to bottom whenever messages update
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -32,8 +34,8 @@ const AnonymousChatComponent = () => {
     const initializeChat = async () => {
       try {
         // Sign in anonymously
-        const userCredential = await signInAnonymously(auth);
-        setUserId(userCredential.user.uid);
+        
+        setUserId(user.uid);
 
         // For this example, we'll use a single chat room
         // You could modify this to create different rooms
@@ -76,19 +78,11 @@ const AnonymousChatComponent = () => {
         timestamp: serverTimestamp(),
         isBot: false
       });
-
+      console.log("done")
       setNewMessage('');
 
       // Simulate bot response (you can replace this with actual bot logic)
-      setTimeout(async () => {
-        await addDoc(collection(db, 'messages'), {
-          text: "Thanks for your message! This is an automated response.",
-          userId: 'bot',
-          roomId: roomId,
-          timestamp: serverTimestamp(),
-          isBot: true
-        });
-      }, 1000);
+      
 
     } catch (error) {
       console.error("Error sending message:", error);
@@ -137,9 +131,10 @@ const AnonymousChatComponent = () => {
           <input
             type="text"
             value={newMessage}
+            ref={textBoxRef}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Type your message..."
-            className="flex-1 px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="textbox flex-1 px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             type="submit"
