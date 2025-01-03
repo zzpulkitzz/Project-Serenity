@@ -1,9 +1,10 @@
 // backend/middleware/authMiddleware.js
 const admin = require('firebase-admin');
-const serviceAccount = require('../mental-health-9fcd8-firebase-adminsdk-l8vcs-95e7185cee.json');
 
+const dotenv=require("dotenv")
+dotenv.config()
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(process.env.FIREBASE_CONFIG)
 });
 
 const verifyToken = async (req, res, next) => {
