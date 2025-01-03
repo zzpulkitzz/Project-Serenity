@@ -4,7 +4,7 @@ const admin = require('firebase-admin');
 const dotenv=require("dotenv")
 dotenv.config()
 admin.initializeApp({
-  credential: admin.credential.cert(process.env.FIREBASE_CONFIG)
+  credential: admin.credential.cert(JSON.parse(process.env.FIREBASE_CONFIG))
 });
 
 const verifyToken = async (req, res, next) => {
