@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "/static/css/main.772956fa.css",
+    "main.js": "/static/js/main.76d27ba3.js",
+    "static/media/banner.jpg": "/static/media/banner.09207fce20e88c551043.jpg",
+    "static/media/mental-health.png": "/static/media/mental-health.b6f49d9f4755ce92d702.png",
+    "static/media/images.jpeg": "/static/media/images.e4ff05d63a9fa9590c65.jpeg",
+    "static/media/instagram.svg": "/static/media/instagram.76c9474bf26b5e0dfb9cb5af202b94f9.svg",
+    "static/media/twitter.svg": "/static/media/twitter.c28e425c8b0741efeca276735dcece04.svg",
+    "index.html": "/index.html",
+    "static/media/linkedin.svg": "/static/media/linkedin.b27ed641293ef9fd75814b8abc3c4251.svg",
+    "main.772956fa.css.map": "/static/css/main.772956fa.css.map",
+    "main.76d27ba3.js.map": "/static/js/main.76d27ba3.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.772956fa.css",
+    "static/js/main.76d27ba3.js"
+  ]
+}
