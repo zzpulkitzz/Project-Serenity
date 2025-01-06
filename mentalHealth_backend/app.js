@@ -38,7 +38,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "./client/build")));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -63,7 +63,7 @@ passport.deserializeUser((user, done) => {
 
 
 app.get("/",(req,res)=>{
-  res.send("mental health")
+  res.sendFile(path.join(__dirname,"./client/build/index.html"))
 })
 app.use("/users",routerUsers,routerAuth,routerScore)
 
