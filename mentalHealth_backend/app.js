@@ -62,7 +62,7 @@ passport.deserializeUser((user, done) => {
 
 
 
-app.get("/",(req,res)=>{
+app.get("*",(req,res)=>{
   res.sendFile(path.join(__dirname,"./client/build/index.html"))
 })
 app.use("/users",routerUsers,routerAuth,routerScore)
@@ -101,7 +101,7 @@ app.get('/auth/google/callback',
     failureRedirect: '/login'}),  // Redirect after successful login
 
     (req, res) => {
-      res.redirect('http://localhost:3001/');  // Redirect to your frontend dashboard
+      res.redirect('https://project-serenity-8i86.onrender.com/');  // Redirect to your frontend dashboard
     }       // Redirect after login failure
   )
 

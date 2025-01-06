@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
         const token = await firebaseUser.getIdToken();
         console.log(token)
         // You'll send this token to your backend
-        const response = await fetch('http://localhost:5200/verify', {
+        const response = await fetch('https://project-serenity-8i86.onrender.com/verify', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
       const token = await userCredential.user.getIdToken();
       
       // Send user data to your backend
-      await fetch('http://localhost:5200/users/signup', {
+      await fetch('https://project-serenity-8i86.onrender.com/users/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -23,7 +23,7 @@ const PHQ9TestComponent = () => {
     try{
         console.log("getting")
 
-      let response=await fetch(`http://localhost:5200/users/score?uid=${uid}`,{headers:{"authorization":`Bearer }`}})
+      let response=await fetch(`https://project-serenity-8i86.onrender.com/users/score?uid=${uid}`,{headers:{"authorization":`Bearer }`}})
       let list_temp =await response.json()
       console.log(typeof list_temp)
       setScore(list_temp)
@@ -43,7 +43,7 @@ const PHQ9TestComponent = () => {
   async function sendScore(score){
     console.log(score)
     try{
-        let response=await fetch(`http://localhost:5200/users/score?uid=${uid}`,{
+        let response=await fetch(`https://project-serenity-8i86.onrender.com/users/score?uid=${uid}`,{
         method:"POST",
         headers:{"Content-type":"application/json","authorization":`Bearer ` },
         body: JSON.stringify({score:score}
